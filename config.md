@@ -4,7 +4,7 @@
                    An example app to demonstrate how Julia code for DiffEq-type 
                    simulations can be compiled for use on the web.
                    """
-@def authors     = "Tom Short"
+@def authors     = "Sarath Suresh"
 
 <!--  NAVBAR SPECS
   NOTE:
@@ -16,7 +16,7 @@
   - nav_logo_path: where the logo is
 -->
 @def add_docs  = true
-@def docs_url  = "https://github.com/tshort/Lorenz-WebAssembly-Model.jl"
+@def docs_url  = "https://github.com/sarath-menon/Lorenz-WebAssembly-Model.jl"
 @def docs_name = "GitHub"
 
 @def add_nav_logo   = true
@@ -67,7 +67,7 @@
 
 @def add_github_view  = true
 @def add_github_star  = true
-@def github_repo      = "tshort/Lorenz-WebAssembly-Model.jl"
+@def github_repo      = "sarath-menon/Lorenz-WebAssembly-Model.jl"
 
 <!-- SECTION LAYOUT
 NOTE:
