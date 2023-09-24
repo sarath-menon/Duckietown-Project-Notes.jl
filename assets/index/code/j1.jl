@@ -13,7 +13,7 @@ function lorenz(u, p, t)
     ρ = p[2]
     β = p[3]
     du1 = σ * (u[2] - u[1])
-    du2 = u[1] * (ρ - u[3]) - u[2]
+    du2 = u[1] * (ρ - u[3]) - u[2
     du3 = u[1] * u[2] - β * u[3]
     return SVector{3}(du1, du2, du3)
 end
