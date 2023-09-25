@@ -1,4 +1,4 @@
-@def title       = "Lorenz Attraction App in Julia"
+@def title       = "Duckietown Recitation Notes"
 @def prepath     = "Lorenz-WebAssembly-Model.jl"
 @def description = """
                    An example app to demonstrate how Julia code for DiffEq-type 
