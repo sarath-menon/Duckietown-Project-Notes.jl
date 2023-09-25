@@ -7,6 +7,7 @@ using WGLMakie
 using Markdown
 using JSServe
 using StaticTools
+import JSServe.TailwindDashboard as D
 
 Page(exportable=true, offline=true) # for Franklin, you still need to configure
 WGLMakie.activate!()
@@ -27,6 +28,7 @@ u(t) = 1
 first_order_sys!(t,x;τ,u) = (u(t) - x) / τ
 
 function first_order_sys!(X, params, t)
+#function first_order_sys!(dX, X, params, t)
 
     # extract the parameters
     τ = params.τ
@@ -38,6 +40,7 @@ function first_order_sys!(X, params, t)
     x_dot = first_order_sys!(t,x;τ=τ,u=u)
 
     # dX[1] = x_dot
+    # return nothing
     return @SVector[x_dot]
 end
 
@@ -50,6 +53,7 @@ App() do session
 
     # diffeq solver
     X0 = @SVector [0.0]
+    # X0 = [0.0]
     tspan = (0.0, 5.0)
     parameters = (;τ=0.2)
     
