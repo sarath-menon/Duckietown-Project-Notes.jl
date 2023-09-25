@@ -38,7 +38,7 @@ function first_order_sys!(X, params, t)
     x_dot = first_order_sys!(t,x;τ=τ,u=u)
 
     # dX[1] = x_dot
-    return SVector{1}(x_dot)
+    return @SVector[x_dot]
 end
 
 App() do session
