@@ -12,14 +12,6 @@ This is an example app to demonstrate how Julia code for DiffEq-type simulations
 
 Here is the model with initial conditions that we'll compile. The important part is using [DiffEqGPU](https://github.com/SciML/DiffEqGPU.jl) to set up an integrator. Because it is designed to run on a GPU, it is natural for static compilation. It doesn't allocate or use features from `libjulia`.
 
-```julia
-#hideall
-
-using DiffEqGPU, StaticArrays, OrdinaryDiffEq
-using StaticTools
-using JSServe
-```
-
 \end{section}
 
 \begin{section}{title="Selva"}
