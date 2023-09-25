@@ -2,9 +2,11 @@
 using Makie.LaTeXStrings: @L_str # hide
 __result = begin # hide
     #hideall
-
+using DiffEqGPU, StaticArrays, OrdinaryDiffEq
 using WGLMakie
 using Markdown
+using JSServe
+using StaticTools
 
 Page(exportable=true, offline=true) # for Franklin, you still need to configure
 WGLMakie.activate!()
@@ -24,7 +26,7 @@ u(t) = 1
 
 first_order_sys!(t,x;τ,u) = (u(t) - x) / τ
 
-function first_order_sys!(dX, X, params, t)
+function first_order_sys!(X, params, t)
 
     # extract the parameters
     τ = params.τ
@@ -35,52 +37,54 @@ function first_order_sys!(dX, X, params, t)
     # x_dot = (u(t) - x) / τ
     x_dot = first_order_sys!(t,x;τ=τ,u=u)
 
-    dX[1] = x_dot
+    # dX[1] = x_dot
+    return SVector{1}(x_dot)
 end
 
-App() do session::Session
-    n = 20
-    index_slider = Slider(0.1:0.1:n)
+App() do session
+    s = D.Slider("Time constant: ", 0.1:0.1:10.)
 
+    # variables
+    t = MallocVector{Float64}(undef,1000)
+    y1 = MallocVector{Float64}(undef,1000)
 
-    X0 =  [0.0]
-
+    # diffeq solver
+    X0 = @SVector [0.0]
     tspan = (0.0, 5.0)
     parameters = (;τ=0.2)
     
     prob2 = ODEProblem(first_order_sys!, X0, tspan, parameters)
-    sol = solve(prob2, Tsit5(), reltol = 1e-8, abstol = 1e-8)
-    
-    fig = Figure()
-    ax = Axis(fig[1, 1], limits=(0,10000,0,1.5))
 
+    # plotting
+    fig = Figure(resolution=(800,600))
+    ax = Axis(fig[1, 1], limits=(tspan[1], tspan[2], 0, 1.))
+
+    x_vec = Observable{Vector{Float64}}([0.])
     y_vec = Observable{Vector{Float64}}([0.])
-    
 
-    integ = DiffEqGPU.init(GPUTsit5(), prob.f, false, u0, 0.0, 0.005, p, nothing, CallbackSet(nothing), true, false)
-    tres = MallocVector{Float64}(undef,10000)
-    u1 = MallocVector{Float64}(undef,10000)
+    lines!(ax, x_vec, y_vec)
 
-    t_vec =  collect(Int32(1):Int32(10000))
-    lines!(ax, t_vec, y_vec)
-    
-    on(index_slider) do val  
-
-        X0 = @SVector [0.0]
-        p2 = @SVector [Float64(val) / 10.0]
+    # interactions
+    app = map(s.widget.value) do val
+        p2 = (;τ=Float64(val) / 10.0)
+        
         integ2 = DiffEqGPU.init(GPUTsit5(), prob2.f, false, X0, 0.0, 0.005, p2, nothing, CallbackSet(nothing), true, false)
 
-        for i in Int32(1):Int32(10000)
+        for i in Int32(1):Int32(1000)
+            t[i] = integ2.t
+            y1[i] = integ2.u[1]
+            
           @inline DiffEqGPU.step!(integ2, integ2.t + integ2.dt, integ2.u)
-          tres[i] = integ2.t
-          u1[i] = integ2.u[1]
+          
         end
-
-        y_vec[] = u1
+        
+        x_vec[] =  t
+        y_vec[] =  y1
     end
     
-    slider = DOM.div("z-index: ", index_slider, index_slider.value)
-    return JSServe.record_states(session, DOM.div(slider, fig))
+    widget_box = D.FlexRow(D.Card(D.FlexCol(s)), D.Card(fig))
+    
+    return JSServe.record_states(session,  DOM.div(widget_box))
 end
 end # hide
 println("~~~") # hide
