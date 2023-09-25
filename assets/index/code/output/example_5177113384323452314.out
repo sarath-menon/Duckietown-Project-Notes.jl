@@ -1,0 +1,2 @@
+LoadError: UndefVarError: @js_str not defined
+in expression starting at none:14
