@@ -57,7 +57,15 @@ App() do session
 
     # plotting
     fig = Figure(resolution=(800,600))
-    ax = Axis(fig[1, 1], limits=(tspan[1], tspan[2], 0, 1.))
+    ax = Axis(fig[1, 1], 
+        limits=(tspan[1], tspan[2], 0, 1.),
+        title="First order response",
+        titlefont=:regular,
+        titlesize=30,
+        xlabelsize=25,
+        ylabelsize=25,
+        xticklabelsize=25,
+        yticklabelsize=25)
 
     x_vec = Observable{Vector{Float64}}([0.])
     y_vec = Observable{Vector{Float64}}([0.])
