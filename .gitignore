@@ -1,3 +1,5 @@
 /Manifest.toml
 __site/
 /waste
+/.ipynb_checkpoints
+/demo.ipynb
