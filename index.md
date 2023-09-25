@@ -19,7 +19,8 @@ Here is the model with initial conditions that we'll compile. The important part
 \begin{showhtml}{}
 ```julia
 #hideall
-using DiffEqGPU, StaticArrays, OrdinaryDiffEq
+using StaticArrays
+using DiffEqGPU, OrdinaryDiffEq
 using WGLMakie
 using Markdown
 using JSServe
@@ -58,7 +59,7 @@ function first_order_sys!(X, params, t)
 
     # dX[1] = x_dot
     # return nothing
-    return @SVector[x_dot]
+    return SVector{1}([x_dot])
 end
 
 App() do session
@@ -69,8 +70,8 @@ App() do session
     y1 = MallocVector{Float64}(undef,1000)
 
     # diffeq solver
-    X0 = @SVector [0.0]
-    # X0 = [0.0]
+    # X0 = @SVector [0.0]
+    X0 = SVector{1}([0.0])
     tspan = (0.0, 5.0)
     parameters = (;τ=0.2)
     
