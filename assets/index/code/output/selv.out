@@ -1,1 +1,50 @@
-UndefVarError: `load` not defined
+ArgumentError: Package MeshIO [7269a6da-0436-5bbc-96c2-40638cbb6118] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+Stacktrace:
+  [1] _require(pkg::Base.PkgId, env::Nothing)
+    @ Base ./loading.jl:1774
+  [2] _require_prelocked(uuidkey::Base.PkgId, env::Nothing)
+    @ Base ./loading.jl:1660
+  [3] _require_prelocked
+    @ ./loading.jl:1658 [inlined]
+  [4] macro expansion
+    @ ./lock.jl:267 [inlined]
+  [5] require(uuidkey::Base.PkgId)
+    @ Base ./loading.jl:1655
+  [6] #34
+    @ ~/.julia/packages/FileIO/BE7iZ/src/loadsave.jl:203 [inlined]
+  [7] lock(f::FileIO.var"#34#35"{Base.PkgId}, l::ReentrantLock)
+    @ Base ./lock.jl:229
+  [8] action(::Symbol, ::Vector{Union{Base.PkgId, Module}}, ::FileIO.Formatted; options::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/BE7iZ/src/loadsave.jl:203
+  [9] action
+    @ ~/.julia/packages/FileIO/BE7iZ/src/loadsave.jl:196 [inlined]
+ [10] action(::Symbol, ::Vector{Union{Base.PkgId, Module}}, ::Symbol, ::String; options::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/BE7iZ/src/loadsave.jl:185
+ [11] action
+    @ ~/.julia/packages/FileIO/BE7iZ/src/loadsave.jl:185 [inlined]
+ [12] load(::String; options::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/BE7iZ/src/loadsave.jl:113
+ [13] load
+    @ ~/.julia/packages/FileIO/BE7iZ/src/loadsave.jl:109 [inlined]
+ [14] (::Main.FD_SANDBOX_16838576116645066621.var"#3#6")(session::JSServe.Session{JSServe.SubConnection})
+    @ Main.FD_SANDBOX_16838576116645066621 ./none:21
+ [15] (::JSServe.var"#8#14"{Main.FD_SANDBOX_16838576116645066621.var"#3#6"})(session::JSServe.Session{JSServe.SubConnection}, request::HTTP.Messages.Request)
+    @ JSServe ~/.julia/packages/JSServe/qgqel/src/types.jl:261
+ [16] #invokelatest#2
+    @ ./essentials.jl:816 [inlined]
+ [17] invokelatest
+    @ ./essentials.jl:813 [inlined]
+ [18] rendered_dom(session::JSServe.Session{JSServe.SubConnection}, app::JSServe.App, target::HTTP.Messages.Request)
+    @ JSServe ~/.julia/packages/JSServe/qgqel/src/app.jl:40
+ [19] rendered_dom
+    @ ~/.julia/packages/JSServe/qgqel/src/app.jl:38 [inlined]
+ [20] session_dom(session::JSServe.Session{JSServe.SubConnection}, app::JSServe.App; init::Bool, html_document::Bool)
+    @ JSServe ~/.julia/packages/JSServe/qgqel/src/session.jl:272
+ [21] session_dom
+    @ ~/.julia/packages/JSServe/qgqel/src/session.jl:271 [inlined]
+ [22] show(io::IOBuffer, m::MIME{Symbol("text/html")}, app::JSServe.App)
+    @ JSServe ~/.julia/packages/JSServe/qgqel/src/display.jl:73
+ [23] top-level scope
+    @ none:1
