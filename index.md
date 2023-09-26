@@ -14,7 +14,7 @@ Here is the model with initial conditions that we'll compile. The important part
 
 \end{section}
 
-<!-- \begin{section}{title="Selva"}
+\begin{section}{title="Selva"}
 
 \begin{showhtml}{}
 ```julia
@@ -63,7 +63,7 @@ function first_order_sys!(X, params, t)
 end
 
 App() do session
-    s = D.Slider("Time constant: ", 0.1:0.1:10.)
+    slider = Slider(0.1:0.1:10.)
 
     # variables
     t = MallocVector{Float64}(undef,1000)
@@ -94,8 +94,10 @@ App() do session
 
     lines!(ax, x_vec, y_vec)
 
+    slider_grid = DOM.div("z-index: ", slider, slider.value)
+
     # interactions
-    app = map(s.widget.value) do val
+    app = map(slider.value) do val
         p2 = (;τ=Float64(val) / 10.0)
         
         integ2 = DiffEqGPU.init(GPUTsit5(), prob2.f, false, X0, 0.0, 0.005, p2, nothing, CallbackSet(nothing), true, false)
@@ -112,21 +114,20 @@ App() do session
         y_vec[] =  y1
     end
     
-    widget_box = D.FlexRow(D.Card(D.FlexCol(s)), D.Card(fig))
+    return JSServe.record_states(session,  DOM.div(slider_grid,fig))
     
-    return JSServe.record_states(session,  DOM.div(widget_box))
 end
 
 
 ```
 \end{showhtml}
-\end{section} -->
+\end{section}
 
 \begin{section}{title="WebAssembly"}
 
 \begin{showhtml}{}
 
-```julia:selv
+```julia
 #hideall
 
 using StaticArrays
@@ -138,9 +139,6 @@ using StaticTools
 import JSServe.TailwindDashboard as D
 using GeometryBasics
 using FileIO
-
-Page(exportable=true, offline=true) # for Franklin, you still need to configure
-WGLMakie.activate!()
 
 function meshcube(o=Vec3f(0), sizexyz=Vec3f(1))
     uvs = map(v -> v ./ (3, 2), Vec2f[
@@ -156,8 +154,7 @@ function meshcube(o=Vec3f(0), sizexyz=Vec3f(1))
             uv=uvs, normals=normals(m)), faces(m))
 end
 
-
-app = App() do session
+App() do session
     slider = Slider(0.1:0.1:10)
     menu = D.Dropdown( "",[sin, tan, cos])
     cmap_button = D.Button("change colormap")
@@ -186,8 +183,18 @@ app = App() do session
     floor_width = 50
     floor_mesh = meshcube(Vec3f(0.5, 0.5, 0.46), Vec3f(bbox_length, bbox_width, 0.01))
 
-    # show quad 
-    fig = mesh(crazyflie_stl, figure = (resolution = (1200, 1000),))
+    # # show quad 
+    # fig = mesh(crazyflie_stl, figure = (resolution = (1200, 1000),))
+
+    fig2 = Figure(resolution = (1200, 1200))
+    pl = PointLight(Point3f(0), RGBf(20, 20, 20))
+    al = AmbientLight(RGBf(0.2, 0.2, 0.2))
+    lscene = LScene(fig2[1, 1], show_axis=false, scenekw = (lights = [pl, al], backgroundcolor=:white, clear=true))
+    zoom!(lscene.scene, cameracontrols(lscene.scene), 3)
+    update_cam!(lscene.scene, cameracontrols(lscene.scene))
+
+    # now you can plot into lscene like you're used to
+    mesh!(crazyflie_stl)
 
     # # show floor
     # floor = mesh!(floor_mesh; color=:green, interpolate=false)
@@ -195,7 +202,7 @@ app = App() do session
 
     slider_grid = DOM.div("z-index: ", slider, slider.value)
     
-    return JSServe.record_states(session, DOM.div(fig, slider_grid, menu, DOM.div("x: ",inp_1, "y: ",inp_2 , "z: ",inp_3)))
+    return JSServe.record_states(session, DOM.div(fig2, slider_grid, menu, DOM.div("x: ",inp_1, "y: ",inp_2 , "z: ",inp_3)))
 end
 
 ```
