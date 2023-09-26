@@ -147,7 +147,10 @@ app = App() do session
     menu = D.Dropdown( "",[sin, tan, cos])
     cmap_button = D.Button("change colormap")
     textfield = D.TextField("type in your text")
-    numberinput = D.NumberInput(0.0)
+
+    inp_1 = D.NumberInput(0.0)
+    inp_2 = D.NumberInput(0.0)
+    inp_3 = D.NumberInput(0.0)
 
     cmap = map(cmap_button) do click
     end
@@ -160,7 +163,7 @@ app = App() do session
 
     slider_grid = DOM.div("z-index: ", slider, slider.value)
     
-    return JSServe.record_states(session, DOM.div(fig, slider_grid, menu, cmap_button, textfield, numberinput))
+    return JSServe.record_states(session, DOM.div(fig, slider_grid, menu, DOM.div("x: ",inp_1, "y: ",inp_2 , "z: ",inp_3)))
 end
 
 show(io, MIME"text/html"(), app)
