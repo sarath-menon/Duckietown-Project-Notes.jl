@@ -124,6 +124,8 @@ end
 
 \begin{section}{title="WebAssembly"}
 
+\begin{showhtml}{}
+
 ```julia:selv
 #hideall
 
@@ -139,9 +141,6 @@ using FileIO
 
 Page(exportable=true, offline=true) # for Franklin, you still need to configure
 WGLMakie.activate!()
-
-io = IOBuffer()
-println(io, "~~~")
 
 function meshcube(o=Vec3f(0), sizexyz=Vec3f(1))
     uvs = map(v -> v ./ (3, 2), Vec2f[
@@ -188,7 +187,7 @@ app = App() do session
     floor_mesh = meshcube(Vec3f(0.5, 0.5, 0.46), Vec3f(bbox_length, bbox_width, 0.01))
 
     # show quad 
-    fig = mesh(crazyflie_stl, figure = (resolution = (1800, 1000),))
+    fig = mesh(crazyflie_stl, figure = (resolution = (1200, 1000),))
 
     # # show floor
     # floor = mesh!(floor_mesh; color=:green, interpolate=false)
@@ -199,12 +198,8 @@ app = App() do session
     return JSServe.record_states(session, DOM.div(fig, slider_grid, menu, DOM.div("x: ",inp_1, "y: ",inp_2 , "z: ",inp_3)))
 end
 
-show(io, MIME"text/html"(), app)
-println(io, "~~~")
-println(String(take!(io)))
-
 ```
 
-\textoutput{selv}
+\end{showhtml}
+\end{section} 
 
-\end{section}
