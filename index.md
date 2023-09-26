@@ -135,6 +135,7 @@ using JSServe
 using StaticTools
 import JSServe.TailwindDashboard as D
 using GeometryBasics
+using FileIO
 
 Page(exportable=true, offline=true) # for Franklin, you still need to configure
 WGLMakie.activate!()
