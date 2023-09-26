@@ -2,6 +2,7 @@
 Clang_jll = "0ee61d77-7f21-5576-8119-9fcc46b10100"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DiffEqGPU = "071ae1c0-96b5-11e9-1965-c90190d839ea"
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 Franklin = "713c75ef-9fc9-4b05-94a9-213340da978e"
 GPUCompiler = "61eb1bfa-7361-4325-ad38-22787b887f55"
 JSServe = "824d6782-a2ef-11e9-3a09-e5662e0c26f9"
