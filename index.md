@@ -5,6 +5,25 @@ This is an example app to demonstrate how Julia code for DiffEq-type simulations
 
 * [StaticCompiler](https://github.com/tshort/StaticCompiler.jl) compiles a Julia model to WebAssembly. This uses [GPUCompiler](https://github.com/JuliaGPU/GPUCompiler.jl) which does most of the work. [StaticTools](https://github.com/brenhinkeller/StaticTools.jl) helps with this static compilation.
 
+## Dynamical System
+* Effect of the actions do not appear immediately - the behaviour evolves with time
+* Eg. To go from 30 km/hr to 60 km/hr in a car we press the accelerator pedal. We know the card doesn't reach 60 km/hr immedately, it takes a few seconds to accelerate to that velocity.
+
+
+# Mathematical models
+
+* Mathematical Representation of a physical, biological or information system. In this class, we focus on dynamical systems (mostly in state-space form)
+* "All models are wrong, but some are useful". Often, a model is an approximation of the real system. The real system might be too complicated to model perfectly. For eg. aerodynamic interactions between the rotor blades of a quadcopter, friction between the tire and ground for a physical robot etc. 
+* The required modelling accuracy depends on the application at hand. Eg. aerodynamic drag can be neglected for low-speed control design for quadcopters
+* Analysis and design must performed keeping in mind the limitations of the model
+
+## Why models ?
+
+* Simulation
+* Controller design
+* Verfication and Validaton
+* Diagnostics, predictive maintenance
+
 
 \end{section}
 
@@ -209,4 +228,58 @@ end
 
 \end{showhtml}
 \end{section} 
+
+\begin{section}{title="WebAssembly"}
+
+# Simulation
+
+## Choice of Simulator
+
+## Choice of Integrator Algorithm and Implementation
+
+* Euler forward is the the simplest, but unstable 
+* Runga-Kutta 4th order (RK4) is a bit more complcated, but is mich more accurate
+* Much fancier algorithms exist (eg. Rosenbrock for stiff ODE's) but RK4 gets the job done most of the time. Popular ODE solvers such Matlab ODE45, scipy ODEint, DIfferentialEquations.jl etc use some fancy version of Rk4 (eg. with adaptive timestepping) as the default algorithm.
+
+## Lockstep Simulation
+
+## Software in the Loop Simulation 
+
+* Duckietown software stack uses Gazebo as defauly simulator 
+* Important to differentiate between the simulator and visualizer 
+
+## Hardware in the Loop Simulation 
+
+# Systems Engineering and Architecture
+
+Architecture is design, and design is art. Much better to explain it using a case study basis. Will as reference paper by Lupashin et al 
+describing the architecure of the Flying Machine Arena (FMA). Well written, contains wealth of information  
+
+## Everything is a tradeoff
+
+* There's no free lunch in systems engineering. Every decision that you take to improve one aspect will be detrimental to some other aspect. Let's see this with a few examples: 
+
+a) Duckiebot old version had Raspberry Pi, new version Jetson. Much better for iamge processing but what's the downside ? Shorter battery life (mW) comparison and higher cost. Not critical for duckiebot, but super-important in real life applications. Many of you might be familiar with the company Zipline that uses autonomous drones to develop medical supplies. Their flagship platform only a low microcontroller as the flight computer (no high level computers like Raspberry Pi of Jetson). This means that it has much less computing power than the duckibot !. To be fair, it doesn't have cameras, so no heavy image processing. But powerful control methods such as MPC would require something like a Raspberry Pi. So, why stick with the microcontroller when using a Raspberry Pi would enable much better controllers ? Well, you alrready know the answer. The are fighting fro grams and milliwatts to increase the range. Each additional kilometer gained results in a bunch of lives saved.
+
+b) IMU connectected to to microcontroller, which in turn connected to Jetson. IMU communicates via, which is supported by the Jetson. So, why not conect it to the Jetson directly ?
+
+## Trade design study 
+
+Compare factors against each other
+
+## Modularity
+
+* Both and hardware level and software level.For project, all of the hardware and most of the software already provided. Your code would most likely be a couple of nodes that add on to the exsiting software infrastructure. It's worth studying the system architecture for two reasons. You will need to know how the submodules are connected to do the project
+* 
+
+## Hardware 
+
+* Not much you can do here, hardware is already
+
+## Co-Design
+
+## Delay Compensation
+
+\end{section} 
+
 
