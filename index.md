@@ -82,7 +82,8 @@ function first_order_sys!(X, params, t)
 end
 
 App() do session
-    slider = Slider(0.1:0.1:10.)
+    slider_1 = Slider(0.1:0.1:10.)
+    slider_2 = Slider(0.1:0.1:1.)
 
     # variables
     t = MallocVector{Float64}(undef,1000)
@@ -113,10 +114,11 @@ App() do session
 
     lines!(ax, x_vec, y_vec)
 
-    slider_grid = DOM.div("z-index: ", slider, slider.value)
+    slider_grid_1 = DOM.div("z-index: ", slider_1, slider_1.value)
+    slider_grid_2 = DOM.div("z-index: ", slider_2, slider_2.value)
 
     # interactions
-    app = map(slider.value) do val
+    app = map(slider_1.value) do val
         p2 = (;τ=Float64(val) / 10.0)
         
         integ2 = DiffEqGPU.init(GPUTsit5(), prob2.f, false, X0, 0.0, 0.005, p2, nothing, CallbackSet(nothing), true, false)
@@ -133,7 +135,7 @@ App() do session
         y_vec[] =  y1
     end
     
-    return JSServe.record_states(session,  DOM.div(slider_grid,fig))
+    return JSServe.record_states(session,  DOM.div(slider_grid_1, slider_grid_2,fig))
     
 end
 
