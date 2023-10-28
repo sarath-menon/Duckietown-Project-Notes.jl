@@ -81,21 +81,45 @@ function first_order_sys!(X, params, t)
     return SVector{1}([x_dot])
 end
 
+second_order_sys!(t,x, x_dot; τ,ζ,u) = -(2*ζ*x_dot)/τ - x/τ^2 +  u(t)
+
+function second_order_sys!(X, params, t)
+    # extract the parameters
+    τ = params.τ
+    ζ = params.ζ
+
+    # extract the state
+    x = X[1]
+    x_dot = X[2]
+    
+    x_ddot = second_order_sys!(t,x,x_dot; τ=τ,ζ=ζ,u=u)
+
+    return SVector{2}([x_dot, x_ddot])
+end
+
 App() do session
-    slider_1 = Slider(0.1:0.1:10.)
-    slider_2 = Slider(0.1:0.1:1.)
+    tau_slider = Slider(0.1:0.1:10.)
+    zeta_slider = Slider(0.1:0.1:1.)
 
     # variables
     t = MallocVector{Float64}(undef,1000)
     y1 = MallocVector{Float64}(undef,1000)
 
-    # diffeq solver
-    # X0 = @SVector [0.0]
-    X0 = SVector{1}([0.0])
-    tspan = (0.0, 5.0)
-    parameters = (;τ=0.2)
+    # # First order system 
+    # # X0 = @SVector [0.0]
+    # X0 = SVector{1}([0.0])
+    # tspan = (0.0, 5.0)
+    # parameters = (;τ=0.2)
     
-    prob2 = ODEProblem(first_order_sys!, X0, tspan, parameters)
+    # prob2 = ODEProblem(first_order_sys!, X0, tspan, parameters)
+
+    # Second order system 
+
+    X0 = SVector{2}([0., 0.])
+    tspan = (0.0, 5.0)
+    parameters = (;τ=0.2, ζ=0.8)
+    
+    prob2 = ODEProblem(second_order_sys!, X0, tspan, parameters)
 
     # plotting
     fig = Figure(resolution=(800,600))
@@ -114,20 +138,20 @@ App() do session
 
     lines!(ax, x_vec, y_vec)
 
-    slider_grid_1 = DOM.div("z-index: ", slider_1, slider_1.value)
-    slider_grid_2 = DOM.div("z-index: ", slider_2, slider_2.value)
+    slider_grid_1 = DOM.div("z-index: ", tau_slider, tau_slider.value)
+    slider_grid_2 = DOM.div("z-index: ", zeta_slider, zeta_slider.value)
 
     # interactions
-    app = map(slider_1.value) do val
-        p2 = (;τ=Float64(val) / 10.0)
-        
-        integ2 = DiffEqGPU.init(GPUTsit5(), prob2.f, false, X0, 0.0, 0.005, p2, nothing, CallbackSet(nothing), true, false)
+    app = map(tau_slider.value, zeta_slider.value) do val, zeta_val
+        params = (;τ=Float64(val) / 10.0, ζ=Float64(zeta_val) / 10.0)
+
+        integ = DiffEqGPU.init(GPUTsit5(), prob2.f, false, X0, 0.0, 0.005, params, nothing, CallbackSet(nothing), true, false)
 
         for i in Int32(1):Int32(1000)
-            t[i] = integ2.t
-            y1[i] = integ2.u[1]
+            t[i] = integ.t
+            y1[i] = integ.u[1]
             
-          @inline DiffEqGPU.step!(integ2, integ2.t + integ2.dt, integ2.u)
+            @inline DiffEqGPU.step!(integ, integ.t + integ.dt, integ.u)
           
         end
         
