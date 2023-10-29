@@ -99,7 +99,7 @@ end
 
 App() do session
     tau_slider = Slider(0.1:0.1:10.)
-    zeta_slider = Slider(0.1:0.1:1.)
+    zeta_slider = Slider(0.:0.1:1.)
 
     # variables
     t = MallocVector{Float64}(undef,1000)
@@ -138,12 +138,12 @@ App() do session
 
     lines!(ax, x_vec, y_vec)
 
-    slider_grid_1 = DOM.div("z-index: ", tau_slider, tau_slider.value)
-    slider_grid_2 = DOM.div("z-index: ", zeta_slider, zeta_slider.value)
+    slider_grid_1 = DOM.div("Time Constant: ", tau_slider, tau_slider.value)
+    slider_grid_2 = DOM.div("Damping Ratio: ", zeta_slider, zeta_slider.value)
 
     # interactions
     app = map(tau_slider.value, zeta_slider.value) do val, zeta_val
-        params = (;τ=Float64(val) / 10.0, ζ=Float64(zeta_val) / 10.0)
+        params = (;τ=Float64(val) , ζ=Float64(zeta_val))
 
         integ = DiffEqGPU.init(GPUTsit5(), prob2.f, false, X0, 0.0, 0.005, params, nothing, CallbackSet(nothing), true, false)
 
