@@ -33,7 +33,9 @@ Here is the model with initial conditions that we'll compile. The important part
 
 \end{section}
 
-\begin{section}{title="First order response"}
+\begin{section}{}
+
+# First order response
 
 \begin{showhtml}{}
 ```julia
@@ -141,9 +143,8 @@ end
 
 ```
 \end{showhtml}
-\end{section}
 
-\begin{section}{title="Second order response"}
+# Second order response
 
 \begin{showhtml}{}
 ```julia
@@ -193,7 +194,7 @@ App() do session
     # plotting
     fig = Figure(resolution=(800,600))
     ax = Axis(fig[1, 1], 
-        limits=(tspan[1], tspan[2], 0, 1.),
+        limits=(tspan[1], tspan[2], 0, 2.),
         title="First order response",
         titlefont=:regular,
         titlesize=30,
