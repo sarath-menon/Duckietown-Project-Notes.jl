@@ -229,7 +229,7 @@ App() do session
         y_vec[] =  y1
     end
 
-    return JSServe.record_states(session,  DOM.div(slider_grid_1, slider_grid_2,fig))
+    return JSServe.record_states(session,  DOM.div(fig, slider_grid_1, slider_grid_2))
     
 end
 
