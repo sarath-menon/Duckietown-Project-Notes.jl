@@ -159,7 +159,7 @@ import JSServe.TailwindDashboard as D
 # forcing function
 u(t) = 1
 
-second_order_sys!(t,x, x_dot; τ,ζ,u) = -(2*ζ*x_dot)/τ - x/τ^2 +  u(t)
+second_order_sys!(t,x, x_dot; τ,ζ,u) = -(2*ζ*x_dot)/τ - x/τ^2 +  u(t)/τ^2
 
 function second_order_sys!(X, params, t)
     # extract the parameters
@@ -184,7 +184,6 @@ App() do session
     y1 = MallocVector{Float64}(undef,1000)
 
     # Second order system 
-
     X0 = SVector{2}([0., 0.])
     tspan = (0.0, 5.0)
     parameters = (;τ=0.2, ζ=0.8)
