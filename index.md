@@ -33,7 +33,7 @@ Here is the model with initial conditions that we'll compile. The important part
 
 \end{section}
 
-\begin{section}{title="Selva"}
+\begin{section}{title="First order response"}
 
 \begin{showhtml}{}
 ```julia
@@ -81,45 +81,22 @@ function first_order_sys!(X, params, t)
     return SVector{1}([x_dot])
 end
 
-second_order_sys!(t,x, x_dot; τ,ζ,u) = -(2*ζ*x_dot)/τ - x/τ^2 +  u(t)
 
-function second_order_sys!(X, params, t)
-    # extract the parameters
-    τ = params.τ
-    ζ = params.ζ
-
-    # extract the state
-    x = X[1]
-    x_dot = X[2]
-    
-    x_ddot = second_order_sys!(t,x,x_dot; τ=τ,ζ=ζ,u=u)
-
-    return SVector{2}([x_dot, x_ddot])
-end
 
 App() do session
     tau_slider = Slider(0.1:0.1:10.)
-    zeta_slider = Slider(0.:0.1:1.)
 
     # variables
     t = MallocVector{Float64}(undef,1000)
     y1 = MallocVector{Float64}(undef,1000)
 
-    # # First order system 
-    # # X0 = @SVector [0.0]
-    # X0 = SVector{1}([0.0])
-    # tspan = (0.0, 5.0)
-    # parameters = (;τ=0.2)
-    
-    # prob2 = ODEProblem(first_order_sys!, X0, tspan, parameters)
-
-    # Second order system 
-
-    X0 = SVector{2}([0., 0.])
+    # First order system 
+    # X0 = @SVector [0.0]
+    X0 = SVector{1}([0.0])
     tspan = (0.0, 5.0)
-    parameters = (;τ=0.2, ζ=0.8)
+    parameters = (;τ=0.2)
     
-    prob2 = ODEProblem(second_order_sys!, X0, tspan, parameters)
+    prob2 = ODEProblem(first_order_sys!, X0, tspan, parameters)
 
     # plotting
     fig = Figure(resolution=(800,600))
@@ -139,11 +116,10 @@ App() do session
     lines!(ax, x_vec, y_vec)
 
     slider_grid_1 = DOM.div("Time Constant: ", tau_slider, tau_slider.value)
-    slider_grid_2 = DOM.div("Damping Ratio: ", zeta_slider, zeta_slider.value)
 
     # interactions
-    app = map(tau_slider.value, zeta_slider.value) do val, zeta_val
-        params = (;τ=Float64(val) , ζ=Float64(zeta_val))
+    app = map(tau_slider.value) do val
+        params = (;τ=Float64(val) )
 
         integ = DiffEqGPU.init(GPUTsit5(), prob2.f, false, X0, 0.0, 0.005, params, nothing, CallbackSet(nothing), true, false)
 
@@ -158,19 +134,8 @@ App() do session
         x_vec[] =  t
         y_vec[] =  y1
     end
-
-    fig_2 = Figure(resolution=(800,600))
-    # ax_2 = Axis(fig_2[1, 1], 
-    #     limits=(tspan[1], tspan[2], 0, 1.),
-    #     title="First order response",
-    #     titlefont=:regular,
-    #     titlesize=30,
-    #     xlabelsize=25,
-    #     ylabelsize=25,
-    #     xticklabelsize=25,
-    #     yticklabelsize=25)
     
-    return JSServe.record_states(session,  DOM.div(fig, slider_grid_1, slider_grid_2))
+    return JSServe.record_states(session,  DOM.div(fig, slider_grid_1))
     
 end
 
@@ -178,7 +143,7 @@ end
 \end{showhtml}
 \end{section}
 
-\begin{section}{title="Selva 2"}
+\begin{section}{title="Second order response"}
 
 \begin{showhtml}{}
 ```julia
@@ -191,29 +156,8 @@ using JSServe
 using StaticTools
 import JSServe.TailwindDashboard as D
 
-#Page(exportable=true, offline=true) # for Franklin, you still need to configure
-
 # forcing function
 u(t) = 1
-
-first_order_sys!(t,x;τ,u) = (u(t) - x) / τ
-
-function first_order_sys!(X, params, t)
-#function first_order_sys!(dX, X, params, t)
-
-    # extract the parameters
-    τ = params.τ
-
-    # extract the state
-    x = X[1]
-    
-    # x_dot = (u(t) - x) / τ
-    x_dot = first_order_sys!(t,x;τ=τ,u=u)
-
-    # dX[1] = x_dot
-    # return nothing
-    return SVector{1}([x_dot])
-end
 
 second_order_sys!(t,x, x_dot; τ,ζ,u) = -(2*ζ*x_dot)/τ - x/τ^2 +  u(t)
 
@@ -238,14 +182,6 @@ App() do session
     # variables
     t = MallocVector{Float64}(undef,1000)
     y1 = MallocVector{Float64}(undef,1000)
-
-    # # First order system 
-    # # X0 = @SVector [0.0]
-    # X0 = SVector{1}([0.0])
-    # tspan = (0.0, 5.0)
-    # parameters = (;τ=0.2)
-    
-    # prob2 = ODEProblem(first_order_sys!, X0, tspan, parameters)
 
     # Second order system 
 
