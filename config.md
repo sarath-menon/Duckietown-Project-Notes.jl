@@ -124,7 +124,7 @@ These definitions are important for the good functioning of some of the
 commands that are defined and used in PkgPage.jl
 -->
 @def sections        = Pair{String,String}[]
-@def section_counter = 1
+@def section_counter = 0
 @def showall         = false
 
 \newcommand{\html}[1]{~~~#1~~~}

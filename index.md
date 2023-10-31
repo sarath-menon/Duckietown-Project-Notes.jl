@@ -1,5 +1,6 @@
+\begin{section}{}
 
-\begin{section}{title="Components"}
+# Components
 
 This is an example app to demonstrate how Julia code for DiffEq-type simulations can be compiled for use on the web. This app is built with the following:
 
@@ -24,16 +25,6 @@ This is an example app to demonstrate how Julia code for DiffEq-type simulations
 * Verfication and Validaton
 * Diagnostics, predictive maintenance
 
-
-\end{section}
-
-\begin{section}{title="WebAssembly"}
-
-Here is the model with initial conditions that we'll compile. The important part is using [DiffEqGPU](https://github.com/SciML/DiffEqGPU.jl) to set up an integrator. Because it is designed to run on a GPU, it is natural for static compilation. It doesn't allocate or use features from `libjulia`.
-
-\end{section}
-
-\begin{section}{}
 
 # First order response
 
@@ -144,6 +135,7 @@ end
 ```
 \end{showhtml}
 
+
 # Second order response
 
 \begin{showhtml}{}
@@ -238,7 +230,6 @@ end
 \end{section}
 
 \begin{section}{title="WebAssembly"}
-
 \begin{showhtml}{}
 
 ```julia
