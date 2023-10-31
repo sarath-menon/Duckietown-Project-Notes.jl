@@ -1,1 +1,2 @@
 page/* linguist-vendored
+*.out filter=lfs diff=lfs merge=lfs -text
