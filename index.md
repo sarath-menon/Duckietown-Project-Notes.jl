@@ -28,6 +28,11 @@ This is an example app to demonstrate how Julia code for DiffEq-type simulations
 
 # First order response
 
+Equation is: $$ \tau\dot{x} + x = u(t) $$
+
+For damping ratio close to 1, it can be approximated as $$ \ddot{x} + \frac{2\zeta\dot{x}}{\tau} + \frac{x}{\tau^2} = u(t) $$.The settling time is around 4 time constants
+
+
 \begin{showhtml}{}
 ```julia
 #hideall
@@ -138,6 +143,10 @@ end
 
 # Second order response
 
+Equation is: $$ \ddot{x} + 2 \zeta \omega_n \dot{x} + \omega_n^2x = u(t) $$
+
+For damping ratio close to 1, it can be approximated as $$ \ddot{x} + \frac{2\zeta\dot{x}}{\tau} + \frac{x}{\tau^2} = u(t) $$. Then, the settling time is around 4 time constants
+
 \begin{showhtml}{}
 ```julia
 #hideall
@@ -227,6 +236,8 @@ end
 
 ```
 \end{showhtml}
+
+
 \end{section}
 
 \begin{section}{title="WebAssembly"}
@@ -317,6 +328,20 @@ end
 
 \begin{section}{title="WebAssembly"}
 
+# Applications
+
+## Autonomous cars
+
+1. **Cruise Control:** Only the velocity needs to be regulated (one state variable). So, first order model is enough
+
+## Quadcopters
+
+1. **BLDC Motor modelling:** Actually a second order system, but behaves like a first order system due to the high bandwidth (quick response) of the BLDC motor system. Simpler, just one parameter to fit the model (time constant). Widely used in quadcopter simulations ([link to fig source] (https://github.com/uzh-rpg/rpg_quadrotor_control/blob/master/documents/theory_and_math/theory_and_math.pdf) )
+
+![BLDC first order model](/assets/images/first_order_bldc.png)
+
+2. **Cascaded control architecture:**
+
 # Simulation
 
 ## Choice of Simulator
@@ -365,6 +390,27 @@ Compare factors against each other
 ## Co-Design
 
 ## Delay Compensation
+
+# Resources
+
+### Real world systems
+
+1. [Raffaelo D'Andrea's talk on Robustness] (https://www.youtube.com/watch?v=_47JnJeSDFU)
+2. [Brian Douglas's playlist on control systems in practice] (https://www.youtube.com/playlist?list=PLn8PRpmsu08pFBqgd_6Bi7msgkWFKL33b)
+
+### Systems engineering
+
+1. [Brian Douglas's playlist on systems engineering](https://www.youtube.com/playlist?list=PLn8PRpmsu08owzDpgnQr7vo2O-FUQm_fL)
+
+### Control theory
+
+1. [Steve Brunton's control bootcamp](https://www.youtube.com/playlist?list=PLMrJAkhIeNNR20Mz-VpzgfQs5zrYi085m)
+2. [Brian Douglas's playlist on classical control](https://www.youtube.com/playlist?list=PLUMWjy5jgHK1NC52DXXrriwihVrYZKqjk)
+3. [Brian Douglas's playlist on state-space control] (https://www.youtube.com/watch?v=hpeKrMG-WP0&list=PLfqhYmT4ggAtpuB1g8NbgH912PwYjn_We)
+
+### State Estimation
+
+1. [Tucker McClure's blog] (https://link-url-here.org)
 
 \end{section} 
 
