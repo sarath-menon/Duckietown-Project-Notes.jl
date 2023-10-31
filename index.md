@@ -2,10 +2,6 @@
 
 # Components
 
-This is an example app to demonstrate how Julia code for DiffEq-type simulations can be compiled for use on the web. This app is built with the following:
-
-* [StaticCompiler](https://github.com/tshort/StaticCompiler.jl) compiles a Julia model to WebAssembly. This uses [GPUCompiler](https://github.com/JuliaGPU/GPUCompiler.jl) which does most of the work. [StaticTools](https://github.com/brenhinkeller/StaticTools.jl) helps with this static compilation.
-
 ## Dynamical System
 * Effect of the actions do not appear immediately - the behaviour evolves with time
 * Eg. To go from 30 km/hr to 60 km/hr in a car we press the accelerator pedal. We know the card doesn't reach 60 km/hr immedately, it takes a few seconds to accelerate to that velocity.
@@ -147,7 +143,7 @@ Equation is: $$ \ddot{x} + 2 \zeta \omega_n \dot{x} + \omega_n^2x = u(t) $$
 
 For damping ratio close to 1, it can be approximated as $$ \ddot{x} + \frac{2\zeta\dot{x}}{\tau} + \frac{x}{\tau^2} = u(t) $$. Then, the settling time is around 4 time constants
 
-\begin{showhtml}{}
+<!-- \begin{showhtml}{}
 ```julia
 #hideall
 using StaticArrays
@@ -235,7 +231,7 @@ App() do session
 end
 
 ```
-\end{showhtml}
+\end{showhtml} -->
 
 
 \end{section}
