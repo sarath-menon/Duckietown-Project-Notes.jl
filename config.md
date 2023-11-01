@@ -1,5 +1,5 @@
-@def title       = "Duckietown Recitation Notes"
-@def prepath     = "Lorenz-WebAssembly-Model.jl"
+@def title       = "Duckietown Project Notes"
+@def prepath     = "Duckietown-Project-Notes.jl"
 @def description = """
                    An example app to demonstrate how Julia code for DiffEq-type 
                    simulations can be compiled for use on the web.
@@ -16,7 +16,7 @@
   - nav_logo_path: where the logo is
 -->
 @def add_docs  = true
-@def docs_url  = "https://github.com/sarath-menon/Lorenz-WebAssembly-Model.jl"
+@def docs_url  = "https://github.com/sarath-menon/Duckietown-Project-Notes.jl"
 @def docs_name = "GitHub"
 
 @def add_nav_logo   = true
