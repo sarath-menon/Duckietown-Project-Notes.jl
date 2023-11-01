@@ -1,7 +1,5 @@
 \begin{section}{}
 
-# Components
-
 ## Dynamical System
 * Effect of the actions do not appear immediately - the behaviour evolves with time
 * Eg. To go from 30 km/hr to 60 km/hr in a car we press the accelerator pedal. We know the card doesn't reach 60 km/hr immedately, it takes a few seconds to accelerate to that velocity.
@@ -21,13 +19,15 @@
 * Verfication and Validaton
 * Diagnostics, predictive maintenance
 
+# Linear Models
+
+Linear models are convenient becuase they're well understood. Lots of tools and techniques are available for the analysis, simulatios, synthesis, simulation, verification etc linear systems. Unfortunately, real world physical systems are never exactly linear. But the behaviour around the desired operating points can be approximated with a linearized version of the actual non-linear modle. Eg. for a quadcopter, the behaviour near hoover condtion can be approximated with linear systems 
 
 # First order response
 
 Equation is: $$ \tau\dot{x} + x = u(t) $$
 
-For damping ratio close to 1, it can be approximated as $$ \ddot{x} + \frac{2\zeta\dot{x}}{\tau} + \frac{x}{\tau^2} = u(t) $$.The settling time is around 4 time constants
-
+where $\tau$ is the time constant. The output reaches around 63% of its steady state value with time $\tau$. 
 
 \begin{showhtml}{}
 ```julia
@@ -136,12 +136,11 @@ end
 ```
 \end{showhtml}
 
-
 # Second order response
 
 Equation is: $$ \ddot{x} + 2 \zeta \omega_n \dot{x} + \omega_n^2x = u(t) $$
 
-For damping ratio close to 1, it can be approximated as $$ \ddot{x} + \frac{2\zeta\dot{x}}{\tau} + \frac{x}{\tau^2} = u(t) $$. Then, the settling time is around 4 time constants
+where $\tau$ is the time constant, $\zeta$ is the damping ratio and $\omega_n$ is the ntural frequency. One issue with this model is that thinking in terms of the natural frequency is often non-intuitive, unlike the time constant. For damping ratio close to 1, it can be approximated as $$ \ddot{x} + \frac{2\zeta\dot{x}}{\tau} + \frac{x}{\tau^2} = u(t) $$. Then, the settling time is around 4 time constants
 
 <!-- \begin{showhtml}{}
 ```julia
@@ -236,8 +235,7 @@ end
 
 \end{section}
 
-\begin{section}{title="WebAssembly"}
-\begin{showhtml}{}
+<!-- \begin{showhtml}{}
 
 ```julia
 #hideall
@@ -318,29 +316,32 @@ App() do session
 end
 
 ```
+\end{showhtml} -->
 
-\end{showhtml}
-\end{section} 
 
-\begin{section}{title="WebAssembly"}
+\begin{section}{}
 
-# Applications
+## Examples
 
-## Autonomous cars
+### Autonomous cars
 
 1. **Cruise Control:** Only the velocity needs to be regulated (one state variable). So, first order model is enough
 
-## Quadcopters
+### Quadcopters
 
 1. **BLDC Motor modelling:** Actually a second order system, but behaves like a first order system due to the high bandwidth (quick response) of the BLDC motor system. Simpler, just one parameter to fit the model (time constant). Widely used in quadcopter simulations ([link to fig source] (https://github.com/uzh-rpg/rpg_quadrotor_control/blob/master/documents/theory_and_math/theory_and_math.pdf) )
 
 ![BLDC first order model](/assets/images/first_order_bldc.png)
 
-2. **Cascaded control architecture:**
+2. **Cascaded control architecture:** Due to the first order dynamics of the BLDC motors, the attitude dynamics also have first order behaviour. So, attitude commands can be tracked using tight PID loops at high rates (eg. 500 Hz) with feedback from the gyro and accelerometer. The position control loop can run much slower since it has much slower second order dynamics (eg. 50 Hz)
+
 
 # Simulation
 
 ## Choice of Simulator
+
+There's no one size fits all simulator. If you're using ROS Gazebo is probably the most convenient one, since it's well integrated into the ROS ecosytem. However, you'll quickly run out of luck if you want to do photorealistic simultion. A game engine like Unreal / Unity would be your best bet here. Similary, you might have to write your own dynamics simulator for specific requirements such as accuarate contact dynamics. Running lots of parallel simulations on the GPU would require another simulator like Nvidia Issac Gym or a custom solution 
+
 
 ## Choice of Integrator Algorithm and Implementation
 
@@ -350,25 +351,33 @@ end
 
 ## Lockstep Simulation
 
-## Software in the Loop Simulation 
+The simulator and autonomy stack wait for messages from each other. Can be used to emulate an RTOS (realtime operating system) based autonomy stack (eg. on a microcontroller) that performs tasks in hard real time, on a non-realtime operating system (eg. linux, windows). Also, this ensures that the simulations are repeatable since messages are never missed.
 
-* Duckietown software stack uses Gazebo as defauly simulator 
-* Important to differentiate between the simulator and visualizer 
+## In the loop simulation 
 
-## Hardware in the Loop Simulation 
+### Software in the Loop (SITL)
+
+The actual software stack running on the robot is used for the simulation. New algorithms are typically written in a high level language like C++/python while prototyping. Then, it's ported to a faster low level language like C/C++. SITL simulaitions can be used to validate the real world software stack without actually testing it on the physical hardware
+
+### Processor in the loop (SITL)
+
+In SITL simulations, all code is usually executed on the development machine. However, the computing platfroms used on the robot might have severe limitations due to their embedded nature (eg. small flash size,stack overflow etc for microcontrollers). There's a chance that code working correctly on the development machine doesn't work on the onboard computer. To test this, the autonomy stack is run on the onboard computer during simulation. 
+
+## Hardware in the Loop Simulation (HITL)
+
+It refers to any simulation that involves hardware. The previously mentioned processor in loop simulation is also an example of HITL simulation.
 
 # Systems Engineering and Architecture
 
-Architecture is design, and design is art. Much better to explain it using a case study basis. Will as reference paper by Lupashin et al 
-describing the architecure of the Flying Machine Arena (FMA). Well written, contains wealth of information  
+Architecture is design, and design is art. Much better to explain it using a case study basis. Will as reference paper by Lupashin et al describing the architecure of the Flying Machine Arena (FMA). Well written, contains wealth of information  
 
 ## Everything is a tradeoff
 
 * There's no free lunch in systems engineering. Every decision that you take to improve one aspect will be detrimental to some other aspect. Let's see this with a few examples: 
 
-a) Duckiebot old version had Raspberry Pi, new version Jetson. Much better for iamge processing but what's the downside ? Shorter battery life (mW) comparison and higher cost. Not critical for duckiebot, but super-important in real life applications. Many of you might be familiar with the company Zipline that uses autonomous drones to develop medical supplies. Their flagship platform only a low microcontroller as the flight computer (no high level computers like Raspberry Pi of Jetson). This means that it has much less computing power than the duckibot !. To be fair, it doesn't have cameras, so no heavy image processing. But powerful control methods such as MPC would require something like a Raspberry Pi. So, why stick with the microcontroller when using a Raspberry Pi would enable much better controllers ? Well, you alrready know the answer. The are fighting fro grams and milliwatts to increase the range. Each additional kilometer gained results in a bunch of lives saved.
+a) The older veriosion of the had a Raspberry Pi instead of the Nvidia Jetson. The Jetson is better for image processing (especially ML based) but what's the downside ? Shorter battery life (3-5 W vs 7-15 W) comparison and higher cost (4x higher). These factors not critical for a toy platform duckiebot, but super-important in real life applications. Many of the readers might be familiar with the company Zipline that uses autonomous drones to develop medical supplies. Their flagship platform only a low microcontroller as the flight computer (no high level computers like Raspberry Pi of Jetson). This means that it has much less computing power than the duckibot !. To be fair, it doesn't have cameras, so no heavy image processing. But powerful control methods such as MPC would require something like a Raspberry Pi. So, why stick with the microcontroller when using a Raspberry Pi would enable much better controllers ? Well, you alrready know the answer. The are fighting fro grams and milliwatts to increase the range. Each additional kilometer gained results in a bunch of lives saved.
 
-b) IMU connectected to to microcontroller, which in turn connected to Jetson. IMU communicates via, which is supported by the Jetson. So, why not conect it to the Jetson directly ?
+<!-- b) IMU connectected to to microcontroller, which in turn connected to Jetson. IMU communicates via, which is supported by the Jetson. So, why not conect it to the Jetson directly ?
 
 ## Trade design study 
 
@@ -383,9 +392,7 @@ Compare factors against each other
 
 * Not much you can do here, hardware is already
 
-## Co-Design
-
-## Delay Compensation
+## Co-Design -->
 
 # Resources
 
@@ -397,6 +404,7 @@ Compare factors against each other
 ### Systems engineering
 
 1. [Brian Douglas's playlist on systems engineering](https://www.youtube.com/playlist?list=PLn8PRpmsu08owzDpgnQr7vo2O-FUQm_fL)
+2. [Gentry Lee's talk at NASA](https://www.youtube.com/watch?v=E6U_Ap2bDaE)
 
 ### Control theory
 
@@ -407,6 +415,10 @@ Compare factors against each other
 ### State Estimation
 
 1. [Tucker McClure's blog] (https://link-url-here.org)
+
+<!-- # Failsafes 
+
+Anything that can fail will fail -->
 
 \end{section} 
 
