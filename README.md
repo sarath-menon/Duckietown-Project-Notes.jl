@@ -1,14 +1,4 @@
+Online notes that I prepared as a teaching assistant for the [Hands-on Self-Driving Cars with Duckietown](https://www.vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheit.view?semkez=2023W&ansicht=ALLE&lerneinheitId=175880&lang=en) course at ETH. I used Julia and Webassembley for the online demos
 
-## 
+Link: https://sarath-menon.github.io/Duckietown-Project-Notes.jl/
 
-The app and instructions are at [Lorenz Attraction App in Julia](http://tshort.github.io/Lorenz-WebAssembly-Model.jl). 
-
-Of the files in this folder, the main ones that are special to this app are:
-
-* `index.md` - Compiles the WebAssembly and defines the user interface for the app.
-* `utils.jl` - Defines a custom Franklin function.
-* `walloc.*` - Memory allocation.
-* `/_libs/mdpad/*` - UI package.
-* `/_libs/wasm-ffi.browser.js` - WebAssembly interface package.
-
-The rest of the files are set up for the PkgPage template or the Julia package environment.
